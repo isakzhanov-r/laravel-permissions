@@ -13,8 +13,8 @@ return [
 
     'models' => [
         'user'       => App\User::class,
-        'role'       => App\User::class,
-        'permission' => App\User::class,
+        'role'       => IsakzhanovR\UserPermission\Models\Role::class,
+        'permission' => IsakzhanovR\UserPermission\Models\Permission::class,
     ],
 
     'tables' => [

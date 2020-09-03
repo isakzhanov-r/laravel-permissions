@@ -1,14 +1,17 @@
 {
-    "name": "isakzhanovr/laravel-user-permission",
+    "name": "isakzhanov-r/laravel-user-permission",
     "description": "Packege for using user roles and permissions in project laravel",
     "type": "library",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/isakzhanov-r/laravel-user-permission/issues",
+        "source": "https://github.com/isakzhanov-r/laravel-user-permission"
+    },
     "authors": [
         {
             "name": "isakzhanovr",
             "email": "isakzhanov.r@gmail.com",
-            "homepage": "https://github.com/isakzhanovR/laravel-user-permission",
-            "role": "Developer"
+            "homepage": "https://github.com/isakzhanov-r/laravel-user-permission"
         }
     ],
 
