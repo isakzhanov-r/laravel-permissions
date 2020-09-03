@@ -18,12 +18,11 @@ return [
     ],
 
     'tables' => [
-        'users'            => 'users',
-        'roles'            => 'roles',
-        'permissions'      => 'permissions',
-        'user_roles'       => 'role_user',
-        'permission_roles' => 'permission_role',
-        'permission_model' => 'permission_model',
+        'users'          => 'users',
+        'roles'          => 'roles',
+        'permissions'    => 'permissions',
+        'user_roles'     => 'role_user',
+        'has_permission' => 'has_permission',
     ],
 
 

@@ -2,9 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
+use IsakzhanovR\UserPermission\Helpers\Config;
 
 class CreateUserPermissionsTable extends Migration
 {
@@ -16,51 +15,43 @@ class CreateUserPermissionsTable extends Migration
 
     public function up()
     {
-        Schema::create($this->table('roles'), function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create(Config::table('roles'), function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('slug')->unique();
             $table->string('title')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
         });
 
-        Schema::create($this->table('permissions'), function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create(Config::table('permissions'), function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('slug')->unique();
             $table->string('title')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
         });
 
-        Schema::create($this->table('user_roles'), function (Blueprint $table) {
-            $table->integer('user_id')->unsigned();
-            $table->integer('role_id')->unsigned();
+        Schema::create(Config::table('user_roles'), function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('role_id');
+
+            $table->foreign('user_id')->references('id')->on(Config::table('users'))->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on(Config::table('roles'))->onDelete('cascade');
+
 
             $table->primary(['user_id', 'role_id'])->unique();
         });
 
-        Schema::create($this->table('permission_roles'), function (Blueprint $table) {
-            $table->integer('permission_id')->unsigned();
-            $table->integer('role_id')->unsigned();
-
-            $table->foreign('permission_id')->references('id')->on($this->table('permissions'))
-                ->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('role_id')->references('id')->on($this->table('roles'))
-                ->onUpdate('cascade')->onDelete('cascade');
-
-            $table->primary(['permission_id', 'role_id']);
-        });
-
-        Schema::create($this->table('permission_model'), function (Blueprint $table) {
-            $table->unsignedInteger('permission_id');
+        Schema::create(Config::table('has_permission'), function (Blueprint $table) {
+            $table->unsignedBigInteger('permission_id');
 
             $table->string('model_type');
-            $table->unsignedInteger('model_id');
+            $table->integer('model_id')->unsigned();
             $table->index(['model_id', 'model_type',], 'model_permissions_model_id_model_type_index');
 
             $table->foreign('permission_id')
                 ->references('id')
-                ->on($this->table('permissions'))
+                ->on(Config::table('permissions'))
                 ->onDelete('cascade');
 
             $table->primary(['permission_id', 'model_id', 'model_type'],
@@ -77,24 +68,10 @@ class CreateUserPermissionsTable extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        $this->tables()->each(function ($table_name) {
+        Config::tables()->each(function ($table_name) {
             Schema::dropIfExists($table_name);
         });
 
         Schema::enableForeignKeyConstraints();
-    }
-
-    private function table($key): string
-    {
-        return Config::get('user_permission.tables.' . $key);
-    }
-
-    private function tables(): Collection
-    {
-        $tables = Config::get('user_permission.tables', []);
-
-        return Collection::make($tables)->filter(function ($value, $key) {
-            return $key !== 'users';
-        });
     }
 }
