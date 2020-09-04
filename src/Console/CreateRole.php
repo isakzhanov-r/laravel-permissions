@@ -3,7 +3,7 @@
 namespace IsakzhanovR\UserPermission\Console;
 
 use Illuminate\Console\Command;
-use IsakzhanovR\UserPermission\Support\Config;
+use IsakzhanovR\UserPermission\Helpers\Config;
 use IsakzhanovR\UserPermission\Traits\Console;
 use Mockery\Exception;
 

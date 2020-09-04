@@ -3,7 +3,7 @@
 namespace IsakzhanovR\UserPermission\Helpers;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config as SupportConfig;
+use Illuminate\Support\Facades\Config as IlluminateConfig;
 
 class Config
 {
@@ -15,27 +15,39 @@ class Config
      */
     public static function model(string $key)
     {
-        if ($model = SupportConfig::get('user_permission.models.' . $key)) {
-            return $model;
-        }
-        throw new \Exception('Unknown model key: ' . $key, 500);
-
+        return self::get('models.' . $key);
     }
 
     public static function table(string $key): string
     {
-        if ($table = SupportConfig::get('user_permission.tables.' . $key)) {
-            return $table;
-        }
-        throw new \Exception('Unknown table key: ' . $key, 500);
+        return self::get('tables.' . $key);
     }
 
     public static function tables(): Collection
     {
-        $tables = SupportConfig::get('user_permission.tables', []);
+        $tables = self::get('tables', []);
 
         return Collection::make($tables)->filter(function ($value, $key) {
             return $key !== 'users';
         });
+    }
+
+    public static function foreignKey(string $key): string
+    {
+        return self::get('foreign_key.' . $key);
+    }
+
+    public static function isCache(): bool
+    {
+        return (bool) self::get('cache', true);
+    }
+
+    private static function get(string $key, $default = null)
+    {
+        if ($settings = IlluminateConfig::get('user_permission.' . $key, $default)) {
+            return $settings;
+        }
+
+        throw new \Exception('Unknown path to value key: ' . $key, 500);
     }
 }
