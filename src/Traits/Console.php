@@ -5,7 +5,7 @@ namespace IsakzhanovR\UserPermission\Traits;
 
 
 use Illuminate\Support\Str;
-use IsakzhanovR\UserPermission\Support\Config;
+use IsakzhanovR\UserPermission\Helpers\Config;
 
 trait Console
 {

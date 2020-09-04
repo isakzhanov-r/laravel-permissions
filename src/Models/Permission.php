@@ -5,7 +5,6 @@ namespace IsakzhanovR\UserPermission\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use IsakzhanovR\UserPermission\Helpers\Config;
 use IsakzhanovR\UserPermission\Repositories\Contracts\PermissionContract;
 use IsakzhanovR\UserPermission\Traits\SetAttribute;
@@ -20,13 +19,17 @@ class Permission extends Model implements PermissionContract
 
     public function __construct(array $attributes = [])
     {
+        $this->table = Config::table('permissions');
         parent::__construct($attributes);
-
-        $this->setTable(Config::table('permissions'));
     }
 
-    public function roles(): BelongsToMany
+    public function users()
     {
-        return $this->belongsToMany();
+        return $this->morphedByMany(Config::model('user'), 'permissible');
+    }
+
+    public function roles()
+    {
+        return $this->morphedByMany(Config::model('role'), 'permissible');
     }
 }
