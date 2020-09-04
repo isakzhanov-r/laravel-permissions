@@ -22,8 +22,12 @@ return [
         'roles'          => 'roles',
         'permissions'    => 'permissions',
         'user_roles'     => 'role_user',
-        'has_permission' => 'has_permission',
+        'permissible' => 'permissible',
     ],
 
-
+    'foreign_key' => [
+        'user'       => 'user_id',
+        'role'       => 'role_id',
+        'permission' => 'permission_id',
+    ],
 ];

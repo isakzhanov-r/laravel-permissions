@@ -32,30 +32,27 @@ class CreateUserPermissionsTable extends Migration
         });
 
         Schema::create(Config::table('user_roles'), function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger(Config::foreignKey('user'));
+            $table->unsignedBigInteger(Config::foreignKey('role'));
 
-            $table->foreign('user_id')->references('id')->on(Config::table('users'))->onDelete('cascade');
-            $table->foreign('role_id')->references('id')->on(Config::table('roles'))->onDelete('cascade');
+            $table->foreign(Config::foreignKey('user'))->references('id')->on(Config::table('users'))->onDelete('cascade');
+            $table->foreign(Config::foreignKey('role'))->references('id')->on(Config::table('roles'))->onDelete('cascade');
 
 
-            $table->primary(['user_id', 'role_id'])->unique();
+            $table->primary([Config::foreignKey('user'), Config::foreignKey('role')])->unique();
         });
 
-        Schema::create(Config::table('has_permission'), function (Blueprint $table) {
-            $table->unsignedBigInteger('permission_id');
+        Schema::create(Config::table('permissible'), function (Blueprint $table) {
+            $table->unsignedBigInteger(Config::foreignKey('permission'));
+            $table->morphs('permissible');
 
-            $table->string('model_type');
-            $table->integer('model_id')->unsigned();
-            $table->index(['model_id', 'model_type',], 'model_permissions_model_id_model_type_index');
-
-            $table->foreign('permission_id')
+            $table->foreign(Config::foreignKey('permission'))
                 ->references('id')
                 ->on(Config::table('permissions'))
                 ->onDelete('cascade');
 
-            $table->primary(['permission_id', 'model_id', 'model_type'],
-                'model_has_permissions_permission_model_type_primary');
+            $table->unique([Config::foreignKey('permission'), 'permissible_id', 'permissible_type'],
+                'model_permissible_permission_model_type_unique');
         });
     }
 
