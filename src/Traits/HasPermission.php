@@ -5,6 +5,7 @@ namespace IsakzhanovR\UserPermission\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
+use IsakzhanovR\UserPermission\Helpers\Cacheable;
 use IsakzhanovR\UserPermission\Helpers\Config;
 use IsakzhanovR\UserPermission\Models\Permission;
 use IsakzhanovR\UserPermission\Models\Role;
@@ -16,8 +17,6 @@ use IsakzhanovR\UserPermission\Models\Role;
  */
 trait HasPermission
 {
-    use Cacheable;
-
     /**
      * Many-to-Many polymorph relations with Permission.
      *
@@ -33,8 +32,9 @@ trait HasPermission
     public function hasPermission(string $permission): bool
     {
         $have_permissions = $this->getPermissions();
+        $primaryKey       = $this->primaryKey;
 
-        return $this->cache(__FUNCTION__, function () use ($permission, $have_permissions) {
+        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($permission, $have_permissions) {
             if ($have_permissions->contains('slug', $permission)) {
                 return true;
             }
@@ -45,7 +45,9 @@ trait HasPermission
 
     public function hasPermissions(...$permissions): bool
     {
-        return $this->cache(__FUNCTION__, function () use ($permissions) {
+        $primaryKey = $this->primaryKey;
+
+        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($permissions) {
             foreach (Arr::flatten($permissions) as $role) {
                 if (!$this->hasPermission($role)) {
                     return false;
@@ -59,8 +61,9 @@ trait HasPermission
     protected function getPermissions(): \Illuminate\Support\Collection
     {
         $collection = collect();
+        $primaryKey = $this->primaryKey;
 
-        return $this->cache(__FUNCTION__, function () use ($collection) {
+        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($collection) {
             if (in_array(HasRoles::class, class_uses($this))) {
                 $this->roles->each(function (Role $role) use (&$collection) {
                     $collection = $collection->merge($role->permissions);

@@ -6,6 +6,7 @@ namespace IsakzhanovR\UserPermission\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
+use IsakzhanovR\UserPermission\Helpers\Cacheable;
 use IsakzhanovR\UserPermission\Helpers\Config;
 use IsakzhanovR\UserPermission\Models\Role;
 
@@ -16,8 +17,6 @@ use IsakzhanovR\UserPermission\Models\Role;
  */
 trait HasRoles
 {
-    use Cacheable;
-
     /**
      * Many-to-Many relations with Role.
      *
@@ -75,7 +74,9 @@ trait HasRoles
      */
     public function hasRole(string $role): bool
     {
-        return $this->cache(__FUNCTION__, function () use ($role) {
+        $primaryKey = $this->primaryKey;
+
+        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($role) {
             if ($this->roles->contains('slug', $role)) {
                 return true;
             }
@@ -91,7 +92,9 @@ trait HasRoles
      */
     public function hasRoles(...$roles): bool
     {
-        return $this->cache(__FUNCTION__, function () use ($roles) {
+        $primaryKey = $this->primaryKey;
+
+        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($roles) {
             foreach (Arr::flatten($roles) as $role) {
                 if (!$this->hasRole($role)) {
                     return false;
