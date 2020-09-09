@@ -7,7 +7,8 @@ namespace IsakzhanovR\UserPermission\Traits;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use IsakzhanovR\UserPermission\Helpers\Cacheable;
-use IsakzhanovR\UserPermission\Helpers\Config;
+use IsakzhanovR\UserPermission\Helpers\Configable;
+use IsakzhanovR\UserPermission\Helpers\Modelable;
 use IsakzhanovR\UserPermission\Models\Role;
 
 /**
@@ -24,7 +25,7 @@ trait HasRoles
      */
     public function roles()
     {
-        return $this->belongsToMany(Config::model('role'), Config::table('user_roles'), Config::foreignKey('user'), Config::foreignKey('role'));
+        return $this->belongsToMany(Configable::model('role'), Configable::table('user_roles'), Configable::foreignKey('user'), Configable::foreignKey('role'));
     }
 
     /**
@@ -32,7 +33,9 @@ trait HasRoles
      */
     public function attachRole($role)
     {
+        $role = Modelable::findRole($role);
 
+        $this->roles()->attach($role->id);
     }
 
     /**
@@ -40,7 +43,9 @@ trait HasRoles
      */
     public function attachRoles(...$roles)
     {
-
+        foreach ($roles as $role) {
+            $this->attachRole($role);
+        }
     }
 
     /**
@@ -48,7 +53,9 @@ trait HasRoles
      */
     public function detachRole($role)
     {
+        $role = Modelable::findRole($role);
 
+        $this->roles()->detach($role->id);
     }
 
     /**
@@ -56,7 +63,9 @@ trait HasRoles
      */
     public function detachRoles(...$roles)
     {
-
+        foreach ($roles as $role) {
+            $this->detachRole($role);
+        }
     }
 
     /**
@@ -74,9 +83,7 @@ trait HasRoles
      */
     public function hasRole(string $role): bool
     {
-        $primaryKey = $this->primaryKey;
-
-        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($role) {
+        return Cacheable::make($this->cacheRoleName(__FUNCTION__), function () use ($role) {
             if ($this->roles->contains('slug', $role)) {
                 return true;
             }
@@ -92,9 +99,7 @@ trait HasRoles
      */
     public function hasRoles(...$roles): bool
     {
-        $primaryKey = $this->primaryKey;
-
-        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($roles) {
+        return Cacheable::make($this->cacheRoleName(__FUNCTION__), function () use ($roles) {
             foreach (Arr::flatten($roles) as $role) {
                 if (!$this->hasRole($role)) {
                     return false;
@@ -103,5 +108,12 @@ trait HasRoles
 
             return true;
         }, $roles);
+    }
+
+    private function cacheRoleName($name): string
+    {
+        $primaryKey = $this->primaryKey;
+
+        return Cacheable::prefix($name, $this->$primaryKey, $this->getTable());
     }
 }

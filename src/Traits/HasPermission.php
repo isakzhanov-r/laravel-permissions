@@ -6,9 +6,9 @@ namespace IsakzhanovR\UserPermission\Traits;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use IsakzhanovR\UserPermission\Helpers\Cacheable;
-use IsakzhanovR\UserPermission\Helpers\Config;
+use IsakzhanovR\UserPermission\Helpers\Configable;
+use IsakzhanovR\UserPermission\Helpers\Modelable;
 use IsakzhanovR\UserPermission\Models\Permission;
-use IsakzhanovR\UserPermission\Models\Role;
 
 /**
  * Trait HasPermission.
@@ -24,55 +24,136 @@ trait HasPermission
      */
     public function permissions()
     {
-        return $this->morphToMany(Config::model('permission'),
+        return $this->morphToMany(Configable::model('permission'),
             'permissible',
-            Config::table('permissible'));
+            Configable::table('permissible'));
     }
 
-    public function hasPermission(string $permission): bool
+    /**
+     * @param $permission
+     */
+    public function attachPermission($permission): void
     {
-        $have_permissions = $this->getPermissions();
-        $primaryKey       = $this->primaryKey;
+        $permission = Modelable::findPermission($permission);
 
-        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($permission, $have_permissions) {
-            if ($have_permissions->contains('slug', $permission)) {
-                return true;
-            }
-
-            return false;
-        }, $permission);
+        $this->permissions()->attach($permission->id);
     }
 
+    /**
+     * @param mixed ...$permissions
+     */
+    public function attachPermissions(...$permissions): void
+    {
+        foreach ($permissions as $permission) {
+            $this->attachPermission($permission);
+        }
+    }
+
+    /**
+     * @param $permission
+     */
+    public function detachPermission($permission): void
+    {
+        $permission = Modelable::findPermission($permission);
+
+        $this->permissions()->detach($permission->id);
+    }
+
+    /**
+     * @param mixed ...$permissions
+     */
+    public function detachPermissions(...$permissions): void
+    {
+        foreach ($permissions as $permission) {
+            $this->detachPermission($permission);
+        }
+    }
+
+    /**
+     * @param array $permissions_ids
+     */
+    public function syncPermissions(array $permissions_ids): void
+    {
+        $this->permissions()->sync($permissions_ids);
+    }
+
+    /**
+     * @param $permission
+     *
+     * @return bool
+     */
+    public function hasPermission($permission): bool
+    {
+        $permission = Modelable::findPermission($permission);
+
+        $have_permissions = $this->getPermissions();
+
+        return Cacheable::make($this->cachePermissionName(__FUNCTION__),
+            function () use ($permission, $have_permissions) {
+                if ($have_permissions->contains('slug', $permission->slug)) {
+                    return true;
+                }
+
+                return false;
+            }, $permission);
+    }
+
+    /**
+     * @param mixed ...$permissions
+     *
+     * @return bool
+     */
     public function hasPermissions(...$permissions): bool
     {
-        $primaryKey = $this->primaryKey;
+        return Cacheable::make($this->cachePermissionName(__FUNCTION__),
+            function () use ($permissions) {
 
-        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($permissions) {
-            foreach (Arr::flatten($permissions) as $role) {
-                if (!$this->hasPermission($role)) {
-                    return false;
+                foreach (Arr::flatten($permissions) as $role) {
+                    if (!$this->hasPermission($role)) {
+                        return false;
+                    }
                 }
-            }
 
-            return true;
-        }, $permissions);
+                return true;
+            }, $permissions);
     }
 
-    protected function getPermissions(): \Illuminate\Support\Collection
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getPermissions(): \Illuminate\Support\Collection
     {
-        $collection = collect();
+        return Cacheable::make($this->cachePermissionName(__FUNCTION__),
+            function () {
+                $collection = $this->rolesPermission();
+
+                return $collection->merge($this->permissions);
+            }, 'all');
+    }
+
+    /**
+     * @param $name
+     *
+     * @return string
+     */
+    private function cachePermissionName($name): string
+    {
         $primaryKey = $this->primaryKey;
 
-        return Cacheable::make(Cacheable::prefix(__FUNCTION__, $this->$primaryKey), function () use ($collection) {
-            if (in_array(HasRoles::class, class_uses($this))) {
-                $this->roles->each(function (Role $role) use (&$collection) {
-                    $collection = $collection->merge($role->permissions);
-                });
-            }
+        return Cacheable::prefix($name, $this->$primaryKey, $this->getTable());
+    }
 
-            $collection = $collection->merge($this->permissions);
+    private function rolesPermission()
+    {
 
-            return $collection;
-        }, 'all');
+        if (in_array(HasRoles::class, class_uses($this))) {
+            return $this->roles->transform(function ($role) {
+                return $role->permissions()->get();
+            })
+                ->flatten()
+                ->unique('id');
+        }
+
+        return collect();
     }
 }

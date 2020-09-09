@@ -4,11 +4,11 @@ namespace IsakzhanovR\UserPermission\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use IsakzhanovR\UserPermission\Helpers\Configable;
-use IsakzhanovR\UserPermission\Repositories\Contracts\RoleContract;
+use IsakzhanovR\UserPermission\Repositories\Contracts\PermissibleContract;
 use IsakzhanovR\UserPermission\Traits\HasPermission;
 use IsakzhanovR\UserPermission\Traits\SetAttribute;
 
-class Role extends Model implements RoleContract
+class Role extends Model implements PermissibleContract
 {
     use SetAttribute, HasPermission;
 
