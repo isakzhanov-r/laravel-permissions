@@ -3,9 +3,10 @@
 namespace IsakzhanovR\UserPermission\Helpers;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config as IlluminateConfig;
+use Illuminate\Support\Facades\Config;
+use IsakzhanovR\UserPermission\Exceptions\UnknownKeyException;
 
-class Config
+final class Configable
 {
     /**
      * @param string $key
@@ -18,11 +19,19 @@ class Config
         return self::get('models.' . $key);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
     public static function table(string $key): string
     {
         return self::get('tables.' . $key);
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public static function tables(): Collection
     {
         $tables = self::get('tables', []);
@@ -32,22 +41,36 @@ class Config
         });
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
     public static function foreignKey(string $key): string
     {
         return self::get('foreign_key.' . $key);
     }
 
+    /**
+     * @return bool
+     */
     public static function isCache(): bool
     {
         return (bool) self::get('cache', true);
     }
 
+    /**
+     * @param string $key
+     * @param null $default
+     *
+     * @return mixed
+     */
     private static function get(string $key, $default = null)
     {
-        if ($settings = IlluminateConfig::get('user_permission.' . $key, $default)) {
+        if ($settings = Config::get('laravel_user_permission.' . $key, $default)) {
             return $settings;
         }
 
-        throw new \Exception('Unknown path to value key: ' . $key, 500);
+        throw new UnknownKeyException($key);
     }
 }

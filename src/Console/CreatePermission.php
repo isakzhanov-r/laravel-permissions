@@ -3,7 +3,7 @@
 namespace IsakzhanovR\UserPermission\Console;
 
 use Illuminate\Console\Command;
-use IsakzhanovR\UserPermission\Helpers\Config;
+use IsakzhanovR\UserPermission\Helpers\Configable;
 use IsakzhanovR\UserPermission\Traits\Console;
 use Mockery\Exception;
 
@@ -26,7 +26,7 @@ class CreatePermission extends Command
 
     protected function create()
     {
-        $model = Config::model('permission');
+        $model = Configable::model('permission');
 
         $model::create(['title' => $this->name()]);
 

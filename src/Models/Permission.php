@@ -5,7 +5,7 @@ namespace IsakzhanovR\UserPermission\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
-use IsakzhanovR\UserPermission\Helpers\Config;
+use IsakzhanovR\UserPermission\Helpers\Configable;
 use IsakzhanovR\UserPermission\Repositories\Contracts\PermissionContract;
 use IsakzhanovR\UserPermission\Traits\SetAttribute;
 
@@ -19,17 +19,22 @@ class Permission extends Model implements PermissionContract
 
     public function __construct(array $attributes = [])
     {
-        $this->table = Config::table('permissions');
+        $this->table = Configable::table('permissions');
         parent::__construct($attributes);
+    }
+
+    public function permissible()
+    {
+        return $this->hasMany(Configable::model('permissible'), Configable::foreignKey('permission'));
     }
 
     public function users()
     {
-        return $this->morphedByMany(Config::model('user'), 'permissible');
+        return $this->morphedByMany(Configable::model('user'), 'permissible', Configable::table('permissible'));
     }
 
     public function roles()
     {
-        return $this->morphedByMany(Config::model('role'), 'permissible');
+        return $this->morphedByMany(Configable::model('role'), 'permissible', Configable::table('permissible'));
     }
 }

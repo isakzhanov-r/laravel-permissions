@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use IsakzhanovR\UserPermission\Helpers\Config;
+use IsakzhanovR\UserPermission\Helpers\Configable;
 
 class CreateUserPermissionsTable extends Migration
 {
@@ -15,7 +15,7 @@ class CreateUserPermissionsTable extends Migration
 
     public function up()
     {
-        Schema::create(Config::table('roles'), function (Blueprint $table) {
+        Schema::create(Configable::table('roles'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('slug')->unique();
             $table->string('title')->nullable();
@@ -23,7 +23,7 @@ class CreateUserPermissionsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create(Config::table('permissions'), function (Blueprint $table) {
+        Schema::create(Configable::table('permissions'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('slug')->unique();
             $table->string('title')->nullable();
@@ -31,27 +31,27 @@ class CreateUserPermissionsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create(Config::table('user_roles'), function (Blueprint $table) {
-            $table->unsignedBigInteger(Config::foreignKey('user'));
-            $table->unsignedBigInteger(Config::foreignKey('role'));
+        Schema::create(Configable::table('user_roles'), function (Blueprint $table) {
+            $table->unsignedBigInteger(Configable::foreignKey('user'));
+            $table->unsignedBigInteger(Configable::foreignKey('role'));
 
-            $table->foreign(Config::foreignKey('user'))->references('id')->on(Config::table('users'))->onDelete('cascade');
-            $table->foreign(Config::foreignKey('role'))->references('id')->on(Config::table('roles'))->onDelete('cascade');
+            $table->foreign(Configable::foreignKey('user'))->references('id')->on(Configable::table('users'))->onDelete('cascade');
+            $table->foreign(Configable::foreignKey('role'))->references('id')->on(Configable::table('roles'))->onDelete('cascade');
 
 
-            $table->primary([Config::foreignKey('user'), Config::foreignKey('role')])->unique();
+            $table->primary([Configable::foreignKey('user'), Configable::foreignKey('role')])->unique();
         });
 
-        Schema::create(Config::table('permissible'), function (Blueprint $table) {
-            $table->unsignedBigInteger(Config::foreignKey('permission'));
+        Schema::create(Configable::table('permissible'), function (Blueprint $table) {
+            $table->unsignedBigInteger(Configable::foreignKey('permission'));
             $table->morphs('permissible');
 
-            $table->foreign(Config::foreignKey('permission'))
+            $table->foreign(Configable::foreignKey('permission'))
                 ->references('id')
-                ->on(Config::table('permissions'))
+                ->on(Configable::table('permissions'))
                 ->onDelete('cascade');
 
-            $table->unique([Config::foreignKey('permission'), 'permissible_id', 'permissible_type'],
+            $table->unique([Configable::foreignKey('permission'), 'permissible_id', 'permissible_type'],
                 'model_permissible_permission_model_type_unique');
         });
     }
@@ -65,7 +65,7 @@ class CreateUserPermissionsTable extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Config::tables()->each(function ($table_name) {
+        Configable::tables()->each(function ($table_name) {
             Schema::dropIfExists($table_name);
         });
 
