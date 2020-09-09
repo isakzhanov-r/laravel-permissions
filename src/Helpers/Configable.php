@@ -36,9 +36,7 @@ final class Configable
     {
         $tables = self::get('tables', []);
 
-        return Collection::make($tables)->filter(function ($value, $key) {
-            return $key !== 'users';
-        });
+        return Collection::make($tables)->except('users');
     }
 
     /**

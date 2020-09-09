@@ -5,7 +5,6 @@ namespace IsakzhanovR\UserPermission\Console;
 use Illuminate\Console\Command;
 use IsakzhanovR\UserPermission\Helpers\Configable;
 use IsakzhanovR\UserPermission\Traits\Console;
-use Mockery\Exception;
 
 class CreateRole extends Command
 {
@@ -18,17 +17,21 @@ class CreateRole extends Command
     public function handle()
     {
         if ($this->roleExist()) {
-            throw new Exception(sprintf('Role "%s" already exists!', $this->name()));
+            $this->error(sprintf('Role "%s" already exists!', $this->name()));
         }
 
         $this->create();
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function create()
     {
         $role = Configable::model('role');
 
-        $role::create(['title' => $this->name()]);
+        $role::query()
+            ->create(['title' => $this->name()]);
 
         $this->info(sprintf('Role "%s" created successfully!', $this->name()));
     }
