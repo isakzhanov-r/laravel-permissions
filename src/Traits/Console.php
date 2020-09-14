@@ -1,22 +1,20 @@
 <?php
 
-
-namespace IsakzhanovR\UserPermission\Traits;
-
+namespace IsakzhanovR\Permissions\Traits;
 
 use Illuminate\Support\Str;
-use IsakzhanovR\UserPermission\Helpers\Modelable;
+use IsakzhanovR\Permissions\Helpers\Modelable;
 
 /**
  * Trait Console
  *
- * @package IsakzhanovR\UserPermission\Traits
+ * @package IsakzhanovR\Permissions\Traits
  */
 trait Console
 {
     /**
-     * @return bool
      * @throws \Exception
+     * @return bool
      */
     protected function roleExist(): bool
     {
@@ -24,8 +22,8 @@ trait Console
     }
 
     /**
-     * @return bool
      * @throws \Exception
+     * @return bool
      */
     protected function permissionExist(): bool
     {

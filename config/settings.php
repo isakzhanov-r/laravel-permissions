@@ -13,9 +13,9 @@ return [
 
     'models' => [
         'user'        => App\User::class,
-        'role'        => IsakzhanovR\UserPermission\Models\Role::class,
-        'permission'  => IsakzhanovR\UserPermission\Models\Permission::class,
-        'permissible' => IsakzhanovR\UserPermission\Models\Permissible::class,
+        'role'        => IsakzhanovR\Permissions\Models\Role::class,
+        'permission'  => IsakzhanovR\Permissions\Models\Permission::class,
+        'permissible' => IsakzhanovR\Permissions\Models\Permissible::class,
     ],
 
     'tables' => [

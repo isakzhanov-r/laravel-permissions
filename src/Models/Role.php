@@ -1,20 +1,16 @@
 <?php
 
-namespace IsakzhanovR\UserPermission\Models;
+namespace IsakzhanovR\Permissions\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use IsakzhanovR\UserPermission\Helpers\Configable;
-use IsakzhanovR\UserPermission\Repositories\Contracts\PermissibleContract;
-use IsakzhanovR\UserPermission\Traits\HasPermission;
-use IsakzhanovR\UserPermission\Traits\SetAttribute;
+use IsakzhanovR\Permissions\Helpers\Configable;
+use IsakzhanovR\Permissions\Repositories\Contracts\PermissibleContract;
+use IsakzhanovR\Permissions\Traits\HasPermission;
+use IsakzhanovR\Permissions\Traits\SetAttribute;
 
 class Role extends Model implements PermissibleContract
 {
     use SetAttribute, HasPermission;
-
-    protected $fillable = [
-        'title', 'slug', 'description',
-    ];
 
     public function __construct(array $attributes = [])
     {

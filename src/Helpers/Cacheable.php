@@ -1,7 +1,6 @@
 <?php
 
-
-namespace IsakzhanovR\UserPermission\Helpers;
+namespace IsakzhanovR\Permissions\Helpers;
 
 use Closure;
 use Illuminate\Support\Arr;
@@ -12,8 +11,8 @@ use Illuminate\Support\Str;
 final class Cacheable
 {
     /**
-     * @param string $prefix
-     * @param \Closure $callback
+     * @param  string  $prefix
+     * @param  \Closure  $callback
      * @param $values
      *
      * @return mixed
@@ -30,7 +29,7 @@ final class Cacheable
     }
 
     /**
-     * @param mixed ...$args
+     * @param  mixed  ...$args
      *
      * @return string
      */
@@ -40,7 +39,7 @@ final class Cacheable
     }
 
     /**
-     * @param string $prefix
+     * @param  string  $prefix
      * @param $values
      *
      * @return string

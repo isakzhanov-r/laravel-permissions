@@ -1,12 +1,12 @@
 <?php
 
-namespace IsakzhanovR\UserPermission\Console;
+namespace IsakzhanovR\Permissions\Commands;
 
 use Illuminate\Console\Command;
 
 class CreateUser extends Command
 {
-    protected $signature = 'create:user';
+    protected $signature = 'laravel-permissions:create-user';
 
     protected $description = 'Create a new user';
 

@@ -1,15 +1,16 @@
 <?php
 
-
-namespace IsakzhanovR\UserPermission;
-
+namespace IsakzhanovR\Permissions;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
-use IsakzhanovR\UserPermission\Console\CreatePermission;
-use IsakzhanovR\UserPermission\Console\CreateRole;
-use IsakzhanovR\UserPermission\Console\CreateUser;
-use IsakzhanovR\UserPermission\Helpers\Configable;
+use IsakzhanovR\Permissions\Commands\CreatePermission;
+use IsakzhanovR\Permissions\Commands\CreateRole;
+use IsakzhanovR\Permissions\Commands\CreateUser;
+use IsakzhanovR\Permissions\Commands\Migration;
+use IsakzhanovR\Permissions\Helpers\Configable;
+
+use function config_path;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -17,7 +18,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->publishes([
-            __DIR__ . '/../config/settings.php' => \config_path('laravel_user_permission.php'),
+            __DIR__ . '/../config/settings.php' => config_path('laravel_permissions.php'),
         ], 'config');
 
         $this->loadPermissions();
@@ -26,7 +27,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/settings.php', 'laravel_user_permission');
+        $this->mergeConfigFrom(__DIR__ . '/../config/settings.php', 'laravel_permissions');
     }
 
     protected function loadPermissions()
@@ -53,6 +54,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     protected function loadCommands()
     {
         $this->commands([
+            Migration::class,
             CreateRole::class,
             CreatePermission::class,
             CreateUser::class,

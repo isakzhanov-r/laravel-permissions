@@ -1,14 +1,14 @@
 <?php
 
-namespace IsakzhanovR\UserPermission\Traits;
-
+namespace IsakzhanovR\Permissions\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Arr;
-use IsakzhanovR\UserPermission\Helpers\Cacheable;
-use IsakzhanovR\UserPermission\Helpers\Configable;
-use IsakzhanovR\UserPermission\Helpers\Modelable;
-use IsakzhanovR\UserPermission\Models\Permission;
+use IsakzhanovR\Permissions\Helpers\Cacheable;
+use IsakzhanovR\Permissions\Helpers\Configable;
+use IsakzhanovR\Permissions\Helpers\Modelable;
+use IsakzhanovR\Permissions\Models\Permission;
 
 /**
  * Trait HasPermission.
@@ -22,7 +22,7 @@ trait HasPermission
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function permissions()
+    public function permissions(): MorphToMany
     {
         return $this->morphToMany(Configable::model('permission'),
             'permissible',
@@ -40,7 +40,7 @@ trait HasPermission
     }
 
     /**
-     * @param mixed ...$permissions
+     * @param  mixed  ...$permissions
      */
     public function attachPermissions(...$permissions): void
     {
@@ -60,7 +60,7 @@ trait HasPermission
     }
 
     /**
-     * @param mixed ...$permissions
+     * @param  mixed  ...$permissions
      */
     public function detachPermissions(...$permissions): void
     {
@@ -70,7 +70,7 @@ trait HasPermission
     }
 
     /**
-     * @param array $permissions_ids
+     * @param  array  $permissions_ids
      */
     public function syncPermissions(array $permissions_ids): void
     {
@@ -99,7 +99,7 @@ trait HasPermission
     }
 
     /**
-     * @param mixed ...$permissions
+     * @param  mixed  ...$permissions
      *
      * @return bool
      */
@@ -109,7 +109,7 @@ trait HasPermission
             function () use ($permissions) {
 
                 foreach (Arr::flatten($permissions) as $role) {
-                    if (!$this->hasPermission($role)) {
+                    if (! $this->hasPermission($role)) {
                         return false;
                     }
                 }

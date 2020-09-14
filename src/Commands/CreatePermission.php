@@ -1,16 +1,16 @@
 <?php
 
-namespace IsakzhanovR\UserPermission\Console;
+namespace IsakzhanovR\Permissions\Commands;
 
 use Illuminate\Console\Command;
-use IsakzhanovR\UserPermission\Helpers\Configable;
-use IsakzhanovR\UserPermission\Traits\Console;
+use IsakzhanovR\Permissions\Helpers\Configable;
+use IsakzhanovR\Permissions\Traits\Console;
 
 class CreatePermission extends Command
 {
     use Console;
 
-    protected $signature = 'create:permission {name}';
+    protected $signature = 'laravel-permissions:create-permission {name}';
 
     protected $description = 'Create a new permission';
 

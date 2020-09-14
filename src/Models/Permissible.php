@@ -1,11 +1,9 @@
 <?php
 
-
-namespace IsakzhanovR\UserPermission\Models;
-
+namespace IsakzhanovR\Permissions\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use IsakzhanovR\UserPermission\Helpers\Configable;
+use IsakzhanovR\Permissions\Helpers\Configable;
 
 class Permissible extends Model
 {

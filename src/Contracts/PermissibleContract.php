@@ -1,7 +1,6 @@
 <?php
 
-
-namespace IsakzhanovR\UserPermission\Repositories\Contracts;
+namespace IsakzhanovR\Permissions\Repositories\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 

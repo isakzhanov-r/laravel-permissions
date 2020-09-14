@@ -1,18 +1,16 @@
 <?php
 
-
-namespace IsakzhanovR\UserPermission\Helpers;
-
+namespace IsakzhanovR\Permissions\Helpers;
 
 use Illuminate\Database\Eloquent\Model;
-use IsakzhanovR\UserPermission\Exceptions\UnknownKeyException;
+use IsakzhanovR\Permissions\Exceptions\UnknownKeyException;
 
 final class Modelable
 {
     /**
      * @param $permission
      *
-     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\IsakzhanovR\UserPermission\Models\Permission|\IsakzhanovR\UserPermission\Models\Role|object
+     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\IsakzhanovR\Permissions\Models\Permission|\IsakzhanovR\Permissions\Models\Role|object
      */
     public static function findPermission($permission)
     {
@@ -22,7 +20,7 @@ final class Modelable
     /**
      * @param $role
      *
-     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\IsakzhanovR\UserPermission\Models\Permission|\IsakzhanovR\UserPermission\Models\Role|object
+     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\IsakzhanovR\Permissions\Models\Permission|\IsakzhanovR\Permissions\Models\Role|object
      */
     public static function findRole($role)
     {
@@ -30,11 +28,11 @@ final class Modelable
     }
 
     /**
-     * @param string $config_model
+     * @param  string  $config_model
      * @param $value
      *
-     * @return bool
      * @throws \Exception
+     * @return bool
      */
     public static function exist(string $config_model, $value)
     {
@@ -47,11 +45,11 @@ final class Modelable
     }
 
     /**
-     * @param string $config_model
+     * @param  string  $config_model
      * @param $value
      *
-     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\IsakzhanovR\UserPermission\Models\Permission|\IsakzhanovR\UserPermission\Models\Role
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\IsakzhanovR\Permissions\Models\Permission|\IsakzhanovR\Permissions\Models\Role
      */
     private static function find(string $config_model, $value): Model
     {

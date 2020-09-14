@@ -1,21 +1,22 @@
 <?php
 
-namespace IsakzhanovR\UserPermission\Traits;
+namespace IsakzhanovR\Permissions\Traits;
 
 use Illuminate\Support\Str;
+
 use function trim;
 
 /**
  * Trait SetAttribute
  *
- * @package IsakzhanovR\UserPermission\Traits
+ * @package IsakzhanovR\Permissions\Traits
  */
 trait SetAttribute
 {
     /**
      * @param $key
      * @param $value
-     * @param null $default
+     * @param  null  $default
      */
     public function setManualAttribute($key, $value, $default = null)
     {

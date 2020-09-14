@@ -1,18 +1,18 @@
 <?php
 
-namespace IsakzhanovR\UserPermission\Helpers;
+namespace IsakzhanovR\Permissions\Helpers;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
-use IsakzhanovR\UserPermission\Exceptions\UnknownKeyException;
+use IsakzhanovR\Permissions\Exceptions\UnknownKeyException;
 
 final class Configable
 {
     /**
-     * @param string $key
+     * @param  string  $key
      *
-     * @return \Illuminate\Database\Eloquent\Model | \IsakzhanovR\UserPermission\Models\Role | \IsakzhanovR\UserPermission\Models\Permission |\App\User
      * @throws \Exception
+     * @return \Illuminate\Database\Eloquent\Model | \IsakzhanovR\Permissions\Models\Role | \IsakzhanovR\Permissions\Models\Permission |\App\User
      */
     public static function model(string $key)
     {
@@ -20,7 +20,7 @@ final class Configable
     }
 
     /**
-     * @param string $key
+     * @param  string  $key
      *
      * @return string
      */
@@ -40,7 +40,7 @@ final class Configable
     }
 
     /**
-     * @param string $key
+     * @param  string  $key
      *
      * @return string
      */
@@ -58,14 +58,14 @@ final class Configable
     }
 
     /**
-     * @param string $key
-     * @param null $default
+     * @param  string  $key
+     * @param  null  $default
      *
      * @return mixed
      */
     private static function get(string $key, $default = null)
     {
-        if ($settings = Config::get('laravel_user_permission.' . $key, $default)) {
+        if ($settings = Config::get('laravel_permissions.' . $key, $default)) {
             return $settings;
         }
 

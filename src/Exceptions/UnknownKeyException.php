@@ -1,7 +1,6 @@
 <?php
 
-
-namespace IsakzhanovR\UserPermission\Exceptions;
+namespace IsakzhanovR\Permissions\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
