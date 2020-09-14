@@ -10,7 +10,7 @@ final class Modelable
     /**
      * @param $permission
      *
-     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\IsakzhanovR\Permissions\Models\Permission|\IsakzhanovR\Permissions\Models\Role|object
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public static function findPermission($permission)
     {
@@ -20,7 +20,7 @@ final class Modelable
     /**
      * @param $role
      *
-     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\IsakzhanovR\Permissions\Models\Permission|\IsakzhanovR\Permissions\Models\Role|object
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public static function findRole($role)
     {
@@ -49,7 +49,7 @@ final class Modelable
      * @param $value
      *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-     * @return \App\User|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\IsakzhanovR\Permissions\Models\Permission|\IsakzhanovR\Permissions\Models\Role
+     * @return \Illuminate\Database\Eloquent\Model
      */
     private static function find(string $config_model, $value): Model
     {

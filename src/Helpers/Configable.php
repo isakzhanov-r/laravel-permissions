@@ -12,7 +12,7 @@ final class Configable
      * @param  string  $key
      *
      * @throws \Exception
-     * @return \Illuminate\Database\Eloquent\Model | \IsakzhanovR\Permissions\Models\Role | \IsakzhanovR\Permissions\Models\Permission |\App\User
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public static function model(string $key)
     {
