@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use IsakzhanovR\Permissions\Commands\CreatePermission;
 use IsakzhanovR\Permissions\Commands\CreateRole;
-use IsakzhanovR\Permissions\Commands\CreateUser;
 use IsakzhanovR\Permissions\Commands\Migration;
 use IsakzhanovR\Permissions\Helpers\Configable;
 
@@ -57,7 +56,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             Migration::class,
             CreateRole::class,
             CreatePermission::class,
-            CreateUser::class,
         ]);
     }
 }

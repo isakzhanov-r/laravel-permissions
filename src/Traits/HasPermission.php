@@ -108,8 +108,8 @@ trait HasPermission
         return Cacheable::make($this->cachePermissionName(__FUNCTION__),
             function () use ($permissions) {
 
-                foreach (Arr::flatten($permissions) as $role) {
-                    if (! $this->hasPermission($role)) {
+                foreach (Arr::flatten($permissions) as $permission) {
+                    if (! $this->hasPermission($permission)) {
                         return false;
                     }
                 }
