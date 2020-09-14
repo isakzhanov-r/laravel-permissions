@@ -3,12 +3,20 @@
 namespace IsakzhanovR\Permissions\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class Ability
+class Ability extends BaseMiddleware
 {
+    /**
+     * Checks for matching permissions *
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string  $permissions
+     *
+     * @return mixed
+     */
     public function handle($request, Closure $next, string $permissions)
     {
         $this->abortGuest();
@@ -17,11 +25,6 @@ class Ability
             return $next($request);
         }
         throw new AccessDeniedHttpException('User has not got a permissions', null, 403);
-    }
-
-    protected function abortGuest()
-    {
-        abort_if(Auth::guest(), 403, 'User is not authorized.');
     }
 
     protected function matchAllow($request, $permissions)

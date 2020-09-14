@@ -3,28 +3,26 @@
 namespace IsakzhanovR\Permissions\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class Role
+class Role extends BaseMiddleware
 {
+    /**
+     * Checks for the occurrence of one of the specified roles.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  array  ...$roles
+     *
+     * @return mixed
+     */
     public function handle($request, Closure $next, ...$roles)
     {
         $this->abortGuest();
 
-        if ($this->allowUser($request, $roles)) {
+        if ($request->user()->hasRoles($roles)) {
             return $next($request);
         }
         throw new AccessDeniedHttpException('User has not got a role', null, 403);
-    }
-
-    protected function abortGuest()
-    {
-        abort_if(Auth::guest(), 403, 'User is not authorized.');
-    }
-
-    protected function allowUser($request, $permissions): bool
-    {
-        return $request->user()->hasRoles($permissions);
     }
 }
