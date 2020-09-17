@@ -438,3 +438,56 @@ protected $routeMiddleware = [
     'ability'     => Ability::class,     // Checks the entry of all of the specified roles.
 ]
 ```
+
+You can use a middleware to filter routes and route groups by permission or role
+
+```php
+// Example, user has been a `seo-manager` `project-manager` roles and a `create-post` `update-post` permissions
+
+// success access
+app('router')
+    ->middleware('role:project-manager,seo-manager', 'permission:create-post,update-post')
+    ->get(...)
+
+// failed access because user has not role `admin`
+app('router')
+    ->middleware('role:project-manager,admin')
+    ->get(...)
+
+// failed access because user has not permission `delete-post`
+app('router')
+    ->middleware('permission:create-post,update-post,delete-post')
+    ->get(...)
+```
+
+If you need to check whether there are matches in permissions use `ability`
+
+```php
+// Example, user has been a `seo-manager` `project-manager` roles and a `create-post` `update-post` permissions
+
+// success access
+app('router')
+    ->middleware('ability:*post')
+    ->get(...)
+
+// failed access because user has not permission `delete` anything
+app('router')
+    ->middleware('ability:delete*')
+    ->get(...)
+
+```
+
+### Artisan commands
+You can create a role or a permission from a console with artisan commands:
+```
+php artisan laravel-permissions:create-role {name}
+
+php artisan laravel-permissions:create-permission {name}
+```
+You can also invoke the creation of roles and permissions from your application:
+
+Artisan::call('laravel-permissions:create-role', ['name' => $name]);
+Artisan::call('laravel-permissions:create-permission', ['name' => $name]);
+
+## License
+This package is released under the [MIT License](LICENSE.md).
