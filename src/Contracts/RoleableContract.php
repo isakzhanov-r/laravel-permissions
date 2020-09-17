@@ -1,6 +1,6 @@
 <?php
 
-namespace IsakzhanovR\Permissions\Repositories\Contracts;
+namespace IsakzhanovR\Permissions\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 

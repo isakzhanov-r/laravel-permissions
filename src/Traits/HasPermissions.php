@@ -5,6 +5,7 @@ namespace IsakzhanovR\Permissions\Traits;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use IsakzhanovR\Permissions\Helpers\Cacheable;
 use IsakzhanovR\Permissions\Helpers\Configable;
 use IsakzhanovR\Permissions\Helpers\Modelable;
@@ -15,7 +16,7 @@ use IsakzhanovR\Permissions\Models\Permission;
  *
  * @property Collection|Permission[] $permissions
  */
-trait HasPermission
+trait HasPermissions
 {
     /**
      * Many-to-Many polymorph relations with Permission.
@@ -44,7 +45,7 @@ trait HasPermission
      */
     public function attachPermissions(...$permissions): void
     {
-        foreach ($permissions as $permission) {
+        foreach (Arr::flatten($permissions) as $permission) {
             $this->attachPermission($permission);
         }
     }
@@ -64,7 +65,7 @@ trait HasPermission
      */
     public function detachPermissions(...$permissions): void
     {
-        foreach ($permissions as $permission) {
+        foreach (Arr::flatten($permissions) as $permission) {
             $this->detachPermission($permission);
         }
     }
@@ -116,6 +117,20 @@ trait HasPermission
 
                 return true;
             }, $permissions);
+    }
+
+    public function matchPermissions(string $permission): bool
+    {
+        return Cacheable::make($this->cachePermissionName(__FUNCTION__),
+            function () use ($permission) {
+                foreach ($this->getPermissions() as $item) {
+                    if (Str::is($permission, $item->slug)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }, $permission);
     }
 
     /**

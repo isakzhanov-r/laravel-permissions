@@ -14,7 +14,7 @@ final class ComposerService
 
     public function __construct()
     {
-        $this->composer = require $this->autoloadPath();
+        $this->boot();
     }
 
     public function app($abstract = null, array $parameters = [])
@@ -51,7 +51,7 @@ final class ComposerService
 
     protected function autoloadPath()
     {
-        return $this->app()->basePath('/vendor/autoload.php');
+        return $this->app()->basePath('vendor/autoload.php');
     }
 
     protected function finder(): SymfonyFinder
@@ -76,6 +76,13 @@ final class ComposerService
             ->replace('/', '\\')
             ->trim(' \\')
             ->title();
+    }
+
+    private function boot()
+    {
+        if (file_exists($this->autoloadPath())) {
+            $this->composer = require $this->autoloadPath();
+        }
     }
 
 }

@@ -1,4 +1,9 @@
 /node_modules
 /.idea
 /yarn.lock
+/*.lock
 /vendor
+/tests/node_modules
+/tests/*.lock
+/tests/*.log
+/tests/mix-manifest.json

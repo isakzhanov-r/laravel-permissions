@@ -42,7 +42,7 @@ trait HasRoles
      */
     public function attachRoles(...$roles): void
     {
-        foreach ($roles as $role) {
+        foreach (Arr::flatten($roles) as $role) {
             $this->attachRole($role);
         }
     }
@@ -62,7 +62,7 @@ trait HasRoles
      */
     public function detachRoles(...$roles): void
     {
-        foreach ($roles as $role) {
+        foreach (Arr::flatten($roles) as $role) {
             $this->detachRole($role);
         }
     }

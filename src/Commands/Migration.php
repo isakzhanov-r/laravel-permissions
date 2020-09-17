@@ -12,7 +12,7 @@ use IsakzhanovR\Permissions\ServiceProvider;
 use IsakzhanovR\Permissions\Services\ComposerService;
 use IsakzhanovR\Permissions\Services\GeneratorModelService;
 use IsakzhanovR\Permissions\Traits\Console;
-use IsakzhanovR\Permissions\Traits\HasPermission;
+use IsakzhanovR\Permissions\Traits\HasPermissions;
 use IsakzhanovR\Permissions\Traits\HasRoles;
 
 class Migration extends Command
@@ -65,7 +65,7 @@ class Migration extends Command
     {
         $user_model = $this->getModel($classes, 'User');
 
-        if ($user_model && ! $this->hasTraits(Arr::first($user_model), HasRoles::class, HasPermission::class)) {
+        if ($user_model && ! $this->hasTraits(Arr::first($user_model), HasRoles::class, HasPermissions::class)) {
             $this->line('');
 
             $this->generator->editUserFile($user_model);

@@ -5,12 +5,18 @@ namespace IsakzhanovR\Permissions\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use IsakzhanovR\Permissions\Helpers\Configable;
-use IsakzhanovR\Permissions\Repositories\Contracts\PermissionContract;
+use IsakzhanovR\Permissions\Contracts\PermissionContract;
 use IsakzhanovR\Permissions\Traits\SetAttribute;
 
 class Permission extends Model implements PermissionContract
 {
     use SetAttribute;
+
+    protected $fillable = [
+        'title',
+        'slug',
+        'description',
+    ];
 
     public function __construct(array $attributes = [])
     {

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 use IsakzhanovR\Permissions\Commands\CreatePermission;
 use IsakzhanovR\Permissions\Commands\CreateRole;
 use IsakzhanovR\Permissions\Commands\Migration;
+use IsakzhanovR\Permissions\Helpers\Cacheable;
 use IsakzhanovR\Permissions\Helpers\Configable;
 
 use function config_path;
@@ -16,9 +17,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        $this->publishes([
-            __DIR__ . '/../config/settings.php' => config_path('laravel_permissions.php'),
-        ], 'config');
+        $this->publishMigrations();
+
+        $this->publishConfig();
 
         $this->loadPermissions();
         $this->loadCommands();
@@ -29,9 +30,23 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/settings.php', 'laravel_permissions');
     }
 
+    protected function publishConfig()
+    {
+        $this->publishes([
+            __DIR__ . '/../config/settings.php' => config_path('laravel_permissions.php'),
+        ], 'config');
+    }
+
+    protected function publishMigrations()
+    {
+        $this->publishes([
+            __DIR__ . '/../database/migrations' => database_path('migrations'),
+        ], 'migrations');
+    }
+
     protected function loadPermissions()
     {
-        if (Schema::hasTable(Configable::table('permissions'))) {
+        if ($this->existPermissionsTable()) {
             $permissions = Configable::model('permission');
             $permissions::all()
                 ->load('permissible')
@@ -41,15 +56,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         }
     }
 
-    protected function defineGate($permission)
-    {
-        $permission->permissible->map(function ($pivot) use ($permission) {
-            Gate::define($permission->slug, function () use ($permission, $pivot) {
-                return $pivot->permissible->hasPermission($permission);
-            });
-        });
-    }
-
     protected function loadCommands()
     {
         $this->commands([
@@ -57,5 +63,22 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             CreateRole::class,
             CreatePermission::class,
         ]);
+    }
+
+    protected function existPermissionsTable()
+    {
+        return Cacheable::make(__FUNCTION__, function () {
+            return Schema::hasTable(Configable::table('permissions'));
+        }, 'boot');
+
+    }
+
+    protected function defineGate($permission)
+    {
+        $permission->permissible->map(function ($pivot) use ($permission) {
+            Gate::define($permission->slug, function () use ($permission, $pivot) {
+                return $pivot->permissible->hasPermission($permission);
+            });
+        });
     }
 }
