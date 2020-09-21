@@ -276,8 +276,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use IsakzhanovR\Permissions\Traits\HasPermissions;
 use IsakzhanovR\Permissions\Traits\HasRoles;
-use IsakzhanovR\Permissions\Repositories\Contracts\PermissibleContract;
-use IsakzhanovR\Permissions\Repositories\Contracts\RoleableContract;
+use IsakzhanovR\Permissions\Contracts\PermissibleContract;
+use IsakzhanovR\Permissions\Contracts\RoleableContract;
 
 final class User  extends Authenticatable implements PermissibleContract, RoleableContract
 {
@@ -467,6 +467,11 @@ If you need to check whether there are matches in permissions use `ability`
 
 // success access
 app('router')
+    ->middleware('ability:*manager')
+    ->get(...)
+
+// success access
+app('router')
     ->middleware('ability:*post')
     ->get(...)
 
@@ -490,4 +495,4 @@ Artisan::call('laravel-permissions:create-role', ['name' => $name]);
 Artisan::call('laravel-permissions:create-permission', ['name' => $name]);
 
 ## License
-This package is released under the [MIT License](LICENSE.md).
+This package was written under [Andrey Helldar](https://github.com/andrey-helldar) supervision under the [MIT License](LICENSE.md).
