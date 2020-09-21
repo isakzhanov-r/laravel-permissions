@@ -30,4 +30,6 @@ return [
         'role'       => 'role_id',
         'permission' => 'permission_id',
     ],
+
+    'cache' => true,
 ];
