@@ -20,20 +20,17 @@ class AttachRolesSeeder
 
     private function factory()
     {
-        $admin = User::query()
-            ->where('email', 'xkoepp@example.com')->first();
+        $admin = User::find(1);
 
         $admin->attachRole(Role::query()->find(1)); // Admin Role in RoleSeeder
 
-        $manager = User::query()
-            ->where('email', 'nmonahan@example.org')->first();
-
-        $manager->attachRoles('manager');
-
-        $seo_manager = User::query()
-            ->where('email', 'zaria.paucek@example.com')->first();
+        $seo_manager = User::find(2);
 
         $seo_manager->attachRoles(2, 'seo-manager');   // Manger and Seo Manager in RoleSeeder
+
+        $manager = User::find(3);
+
+        $manager->attachRoles('manager');
     }
 
 }

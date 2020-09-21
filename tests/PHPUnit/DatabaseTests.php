@@ -12,27 +12,32 @@ class DatabaseTests extends TestCase
 {
     public function testUsers()
     {
-        $user = User::query()
-            ->where('email', 'xkoepp@example.com')->first();
+        $users = User::query()->get();
+        $user  = $users->first();
 
+        $this->assertEquals(3, $users->count());
         $this->assertEquals('Hallie Bins', $user->name);
+        $this->assertEquals('xkoepp@example.com', $user->email);
     }
 
     public function testRoles()
     {
-        $admin = Role::query()->find(3);
+        $roles = Role::query()->get();
+        $role  = $roles->last();
 
-        $this->assertEquals('Seo Manager', $admin->title);
-        $this->assertEquals('seo-manager', $admin->slug);
-        $this->assertEquals('Seo Manager', $admin->description);
+        $this->assertEquals(3, $roles->count());
+        $this->assertEquals('Seo Manager', $role->title);
+        $this->assertEquals('seo-manager', $role->slug);
+        $this->assertEquals('Seo Manager', $role->description);
     }
 
     public function testPermissions()
     {
-        $show_post_type = Permission::query()->find(9);
+        $permissions    = Permission::query()->get();
+        $show_post_type = $permissions->where('slug', Str::slug('Show post type'))->first();
 
+        $this->assertEquals(11, $permissions->count());
         $this->assertEquals('Show post type', $show_post_type->title);
-        $this->assertEquals(Str::slug('Show post type'), $show_post_type->slug);
         $this->assertEquals('Permission to show post type', $show_post_type->description);
     }
 }

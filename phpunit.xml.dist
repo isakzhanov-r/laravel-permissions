@@ -11,7 +11,7 @@
          stopOnFailure="false"
          verbose="true">
     <php>
-        <env name="APP_KEY" value="base64:6g5fxK570DmW7kv6kEymMe07cqOzNauLH7U15gcR5ng="/>
+        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
     </php>
     <testsuites>
         <testsuite name="Package Test Suite">
