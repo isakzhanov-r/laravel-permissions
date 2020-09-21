@@ -87,11 +87,9 @@ trait HasPermissions
     {
         $permission = Modelable::findPermission($permission);
 
-        $have_permissions = $this->getPermissions();
-
         return Cacheable::make($this->cachePermissionName(__FUNCTION__),
-            function () use ($permission, $have_permissions) {
-                if ($have_permissions->contains('slug', $permission->slug)) {
+            function () use ($permission) {
+                if ($this->getPermissions()->contains('slug', $permission->slug)) {
                     return true;
                 }
 
@@ -121,6 +119,8 @@ trait HasPermissions
 
     public function matchPermissions(string $permission): bool
     {
+        $permission = e(trim($permission));
+
         return Cacheable::make($this->cachePermissionName(__FUNCTION__),
             function () use ($permission) {
                 foreach ($this->getPermissions() as $item) {
@@ -142,7 +142,7 @@ trait HasPermissions
             function () {
                 $collection = $this->rolesPermission();
 
-                return $collection->merge($this->permissions);
+                return $collection->merge($this->permissions()->get());
             }, 'all');
     }
 
@@ -160,9 +160,8 @@ trait HasPermissions
 
     private function rolesPermission()
     {
-
         if (in_array(HasRoles::class, class_uses($this))) {
-            return $this->roles->transform(function ($role) {
+            return $this->roles()->get()->transform(function ($role) {
                 return $role->permissions()->get();
             })
                 ->flatten()

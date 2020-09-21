@@ -65,8 +65,8 @@ final class Configable
      */
     private static function get(string $key, $default = null)
     {
-        if ($settings = Config::get('laravel_permissions.' . $key, $default)) {
-            return $settings;
+        if (Config::has('laravel_permissions.' . $key, $default)) {
+            return Config::get('laravel_permissions.' . $key, $default);
         }
 
         throw new UnknownKeyException($key);

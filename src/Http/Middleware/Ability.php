@@ -13,28 +13,34 @@ class Ability extends BaseMiddleware
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string  $permissions
+     * @param  string  $placeholder
      *
      * @return mixed
      */
-    public function handle($request, Closure $next, string $permissions)
+    public function handle($request, Closure $next, string $placeholder)
     {
         $this->abortGuest();
 
-        if ($this->matchAllow($request, $permissions)) {
+        if ($this->matchAllowRoles($request, $placeholder) || $this->matchAllowPermissions($request, $placeholder)) {
             return $next($request);
         }
         throw new AccessDeniedHttpException('User has not got a permissions', null, 403);
     }
 
-    protected function matchAllow($request, $permissions)
+    protected function matchAllowRoles($request, $placeholder)
     {
-        foreach ($request->user()->getPermissions() as $permission) {
-            if (Str::is($permissions, $permission->slug)) {
+        $placeholder = e(trim($placeholder));
+        foreach ($request->user()->roles as $role) {
+            if (Str::is($placeholder, $role->slug)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    protected function matchAllowPermissions($request, $permissions)
+    {
+        return $request->user()->matchPermissions($permissions);
     }
 }

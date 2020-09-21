@@ -67,15 +67,15 @@ final class GeneratorModelService
         $content =
             Str::replaceFirst("use Illuminate\Notifications\Notifiable;",
                 "use Illuminate\Notifications\Notifiable;\n" .
-                "use IsakzhanovR\Permissions\Traits\HasPermission;\n" .
+                "use IsakzhanovR\Permissions\Traits\HasPermissions;\n" .
                 "use IsakzhanovR\Permissions\Traits\HasRoles;\n" .
-                "use IsakzhanovR\Permissions\Repositories\Contracts\PermissibleContract;\n" .
-                "use IsakzhanovR\Permissions\Repositories\Contracts\RoleableContract;\n", $content);
+                "use IsakzhanovR\Permissions\Contracts\PermissibleContract;\n" .
+                "use IsakzhanovR\Permissions\Contracts\RoleableContract;\n", $content);
 
         $content = Str::replaceFirst("extends Authenticatable", " extends Authenticatable implements PermissibleContract, RoleableContract\n", $content);
 
         $content
-            = Str::replaceLast("Notifiable;", "Notifiable, HasRoles, HasPermission;\n", $content);
+            = Str::replaceLast("Notifiable;", "Notifiable, HasRoles, HasPermissions;\n", $content);
 
         return $content;
     }

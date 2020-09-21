@@ -38,6 +38,8 @@ final class Modelable
     {
         $model = Configable::model($config_model);
 
+        $value = trim($value);
+
         return $model::query()
             ->where('id', $value)
             ->orWhere('slug', $value)
@@ -58,6 +60,8 @@ final class Modelable
         if ($value instanceof $model) {
             return $value;
         }
+
+        $value = trim($value);
 
         $item = $model::query()
             ->where('id', $value)

@@ -85,7 +85,7 @@ trait HasRoles
         $role = Modelable::findRole($role);
 
         return Cacheable::make($this->cacheRoleName(__FUNCTION__), function () use ($role) {
-            if ($this->roles->contains('slug', $role)) {
+            if ($this->roles()->get()->contains('slug', $role->slug)) {
                 return true;
             }
 
