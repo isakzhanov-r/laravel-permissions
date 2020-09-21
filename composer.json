@@ -1,6 +1,6 @@
 {
     "name": "isakzhanov-r/laravel-permissions",
-    "description": "Packege for using user roles and permissions in project laravel",
+    "description": "Package for using user roles and permissions in project laravel",
     "keywords": ["laravel", "permissions", "user roles", "model permission", "user permissions", "roles permissions"],
     "type": "library",
     "license": "MIT",

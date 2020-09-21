@@ -3,9 +3,9 @@
 Basic roles and permissions is a succinct and flexible way to add Role-based Permissions
 
 <p align="center">
-    <a href="https://packagist.org/packages/isakzhanov-r/laravel-permissions"><img src="https://img.shields.io/packagist/dt/isakzhanov-r/laravel-ssr.svg?style=flat-square" alt="Total Downloads" /></a>
-    <a href="https://packagist.org/packages/isakzhanov-r/laravel-permissions"><img src="https://poser.pugx.org/isakzhanov-r/laravel-ssr/v/stable?format=flat-square" alt="Latest Stable Version" /></a>
-    <a href="https://packagist.org/packages/isakzhanov-r/laravel-permissions"><img src="https://poser.pugx.org/isakzhanov-r/laravel-ssr/v/unstable?format=flat-square" alt="Latest Unstable Version" /></a>
+    <a href="https://packagist.org/packages/isakzhanov-r/laravel-permissions"><img src="https://img.shields.io/packagist/dt/isakzhanov-r/laravel-permissions.svg?style=flat-square" alt="Total Downloads" /></a>
+    <a href="https://packagist.org/packages/isakzhanov-r/laravel-permissions"><img src="https://poser.pugx.org/isakzhanov-r/laravel-permissions/v/stable?format=flat-square" alt="Latest Stable Version" /></a>
+    <a href="https://packagist.org/packages/isakzhanov-r/laravel-permissions"><img src="https://poser.pugx.org/isakzhanov-r/laravel-permissions/v/unstable?format=flat-square" alt="Latest Unstable Version" /></a>
     <a href="LICENSE.md"><img src="https://poser.pugx.org/isakzhanov-r/laravel-permissions/license?format=flat-square" alt="License" /></a>
 </p>
 
