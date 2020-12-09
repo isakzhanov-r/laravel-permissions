@@ -2,6 +2,7 @@
 
 namespace IsakzhanovR\Permissions;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use IsakzhanovR\Permissions\Commands\CreatePermission;
@@ -68,9 +69,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     protected function existPermissionsTable()
     {
         return Cacheable::make(__FUNCTION__, function () {
-            return Schema::hasTable(Configable::table('permissions'));
+            return Schema::connection(Config::get('connection', 'mysql'))->hasTable(Configable::table('permissions'));
         }, 'boot');
-
     }
 
     protected function defineGate($permission)
