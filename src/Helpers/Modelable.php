@@ -3,7 +3,6 @@
 namespace IsakzhanovR\Permissions\Helpers;
 
 use Illuminate\Database\Eloquent\Model;
-use IsakzhanovR\Permissions\Exceptions\UnknownKeyException;
 
 final class Modelable
 {
@@ -53,7 +52,7 @@ final class Modelable
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      * @return \Illuminate\Database\Eloquent\Model
      */
-    private static function find(string $config_model, $value): Model
+    private static function find(string $config_model, $value): ?Model
     {
         $model = Configable::model($config_model);
 
@@ -63,15 +62,9 @@ final class Modelable
 
         $value = trim($value);
 
-        $item = $model::query()
+        return $model::query()
             ->where('id', $value)
             ->orWhere('slug', $value)
             ->first();
-
-        if (is_null($item)) {
-            throw new UnknownKeyException($value, $model);
-        }
-
-        return $item;
     }
 }
