@@ -37,7 +37,9 @@ trait HasPermissions
     {
         $permission = Modelable::findPermission($permission);
 
-        $this->permissions()->attach($permission->id);
+        if ($permission) {
+            $this->permissions()->attach($permission->id);
+        }
     }
 
     /**
@@ -57,7 +59,9 @@ trait HasPermissions
     {
         $permission = Modelable::findPermission($permission);
 
-        $this->permissions()->detach($permission->id);
+        if ($permission) {
+            $this->permissions()->detach($permission->id);
+        }
     }
 
     /**
@@ -86,6 +90,9 @@ trait HasPermissions
     public function hasPermission($permission): bool
     {
         $permission = Modelable::findPermission($permission);
+        if (is_null($permission)) {
+            return false;
+        }
 
         return Cacheable::make($this->cachePermissionName(__FUNCTION__),
             function () use ($permission) {
@@ -114,6 +121,21 @@ trait HasPermissions
                 }
 
                 return true;
+            }, $permissions);
+    }
+
+    public function hasAnyPermission(...$permissions): bool
+    {
+        return Cacheable::make($this->cachePermissionName(__FUNCTION__),
+            function () use ($permissions) {
+
+                foreach (Arr::flatten($permissions) as $permission) {
+                    if ($this->hasPermission($permission)) {
+                        return true;
+                    }
+                }
+
+                return false;
             }, $permissions);
     }
 

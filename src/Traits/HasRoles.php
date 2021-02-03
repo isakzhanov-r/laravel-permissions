@@ -34,7 +34,9 @@ trait HasRoles
     {
         $role = Modelable::findRole($role);
 
-        $this->roles()->attach($role->id);
+        if ($role) {
+            $this->roles()->attach($role->id);
+        }
     }
 
     /**
@@ -54,7 +56,9 @@ trait HasRoles
     {
         $role = Modelable::findRole($role);
 
-        $this->roles()->detach($role->id);
+        if ($role) {
+            $this->roles()->detach($role->id);
+        }
     }
 
     /**
@@ -84,6 +88,10 @@ trait HasRoles
     {
         $role = Modelable::findRole($role);
 
+        if (is_null($role)) {
+            return false;
+        }
+
         return Cacheable::make($this->cacheRoleName(__FUNCTION__), function () use ($role) {
             if ($this->roles()->get()->contains('slug', $role->slug)) {
                 return true;
@@ -108,6 +116,19 @@ trait HasRoles
             }
 
             return true;
+        }, $roles);
+    }
+
+    public function hasAnyRole(...$roles): bool
+    {
+        return Cacheable::make($this->cacheRoleName(__FUNCTION__), function () use ($roles) {
+            foreach (Arr::flatten($roles) as $role) {
+                if ($this->hasRole($role)) {
+                    return true;
+                }
+            }
+
+            return false;
         }, $roles);
     }
 
