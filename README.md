@@ -10,6 +10,7 @@ Basic roles and permissions is a succinct and flexible way to add Role-based Per
 </p>
 
 ## Contents
+
 * [Installation](#installation)
 * [Configuration](#configuration)
     * [Role model](#role-model)
@@ -53,11 +54,13 @@ IsakzhanovR\Permissions\ServiceProvider::class;
 ```
 
 Copy the package config to your local config with the publish command:
+
 ```
 php artisan vendor:publish --provider="IsakzhanovR\Permissions\ServiceProvider"
 ```
 
 You can create the DB tables by running the migrations:
+
 ```
 php artisan migrate
 ```
@@ -69,26 +72,33 @@ But you can also use the command for automatic installation
 ```
 php artisan laravel-permissions:migrate
 ```
-This command will publish the configuration file. Run the migration command, generate models for tables, and change the User model . all configuration of the package will happen automatically. after executing this command, you don't need to configure anything.
+
+This command will publish the configuration file. Run the migration command, generate models for tables, and change the User model . all configuration of the package will happen
+automatically. after executing this command, you don't need to configure anything.
+
 ```
 Role.php
 Permission.php
 Permissible.php
 ```
 
-##Configuration
+## Configuration
 
 To further customize table names and model namespaces, edit the `config/laravel_permissions.php` after you run command
+
 ```
 php artisan vendor:publish --provider="IsakzhanovR\Permissions\ServiceProvider
 ```
+
 before you run the command `php artisan migrate` four new tables will be present:
+
 - `tables`
-  - `users` - the default table for the relationship to the user
-  - `roles` - stores role records
-  - `permissions` - stores permission records
-  - `user_roles` - stores [many-to-many](https://laravel.com/docs/master/eloquent-relationships#many-to-many) relations between roles and users
-  - `permissible` - stores many-to-many[polymorphic](https://laravel.com/docs/master/eloquent-relationships#many-to-many-polymorphic-relations) relations between another essences (User,Role, ...) and permissions
+    - `users` - the default table for the relationship to the user
+    - `roles` - stores role records
+    - `permissions` - stores permission records
+    - `user_roles` - stores [many-to-many](https://laravel.com/docs/master/eloquent-relationships#many-to-many) relations between roles and users
+    - `permissible` - stores many-to-many[polymorphic](https://laravel.com/docs/master/eloquent-relationships#many-to-many-polymorphic-relations) relations between another
+      essences (User,Role, ...) and permissions
 
 - `foreign_key` - the key relationships in the tables
 - `models` - references to model classes
@@ -96,7 +106,9 @@ before you run the command `php artisan migrate` four new tables will be present
 ### Models
 
 #### Role model
+
 * Create a Role model, using the following example:
+
 ```php
 namespace App\Models;
 
@@ -111,7 +123,9 @@ final class Role extends LaravelRole
         ];
 }
 ```
+
 * After creating model set the model reference in file `config/laravel_permissions`
+
 ```php
 return [
 //...
@@ -122,19 +136,21 @@ return [
     ],
 ];
 ```
+
 * Or use command `php artisan laravel-permissions:migrate` to generate this automaticaly
 
 The `Role` model has three main attributes:
 
 - `slug` — Unique name for the Role, used for looking up role information in the application layer. For example: "admin", "owner", "manager".
 - `title` — Human readable name for the Role. Not necessarily unique and optional. For example: "User Administrator", "Project Owner", "Project Manager".
-- `description` — A more detailed explanation of what the Role does. Also optional.
-And description are optional; its field is nullable in the database.
+- `description` — A more detailed explanation of what the Role does. Also optional. And description are optional; its field is nullable in the database.
 
 Base model `IsakzhanovR\Permissions\Models\Role` use trait `HasPermissions`
 
 #### Permission model
+
 * Create a Permission model, using the following example:
+
 ```php
 namespace App\Models;
 
@@ -149,7 +165,9 @@ final class Permission extends LaravelPermission
         ];
 }
 ```
+
 * After creating model set the model reference in file `config/laravel_permissions`
+
 ```php
 return [
 //...
@@ -161,6 +179,7 @@ return [
 //....
 ];
 ```
+
 * Or use command `php artisan laravel-permissions:migrate` to generate this automaticaly
 
 The `Permission` model has the same three attributes as the Role:
@@ -169,9 +188,12 @@ The `Permission` model has the same three attributes as the Role:
 - `title` — Human readable name for the Permission. Not necessarily unique and optional. For example: "Create User", "Update User", "Delete User".
 - `description` — A more detailed explanation of what the Permission does.
 
-if you look at the default model `IsakzhanovR\Permissions\Models\Permission`, you will see [morphedByMany](https://laravel.com/docs/master/eloquent-relationships#many-to-many-polymorphic-relations) relationships for users and roles. You can extend this list with your own entities.
+if you look at the default model `IsakzhanovR\Permissions\Models\Permission`, you will
+see [morphedByMany](https://laravel.com/docs/master/eloquent-relationships#many-to-many-polymorphic-relations) relationships for users and roles. You can extend this list with your
+own entities.
 
 Example :
+
 ```php
 final class Permission extends LaravelPermission
 {
@@ -187,8 +209,9 @@ final class Permission extends LaravelPermission
 And `PostType` model must use trait `HasPermissions`
 
 #### Permissible model
-This is the standard polymorph pivot model
-The `Permissible` model has the same three attributes:
+
+This is the standard polymorph pivot model The `Permissible` model has the same three attributes:
+
 - `permission_id` — Foreign key for the Permission.
 - `permissible_type` — Belong to model (Class name).
 - `permissible_id` — Belong to model (key).
@@ -203,7 +226,9 @@ final class Permissible extends LaravelPermissible
 
 }
 ```
+
 After creating model you also need to append link in config file
+
 ```php
 return [
 //...
@@ -216,9 +241,13 @@ return [
 ```
 
 Or use the command to automatically install the package and generate models and a configuration file
+
 ## Usage
-###Creating
+
+### Creating
+
 Let's start by creating the following `Roles` and `Permissions`:
+
 ```php
     use \App\Models\Role;
     $admin = new Role();
@@ -235,7 +264,8 @@ Let's start by creating the following `Roles` and `Permissions`:
 ```
 
 Now we just need to creat permissions:
- We will create permissions without a description, and slug is created from title
+We will create permissions without a description, and slug is created from title
+
 ```php
     use \App\Models\Permission;
     $createPost = new Permission();
@@ -266,7 +296,9 @@ Now we just need to creat permissions:
     $deleteNews->title = 'Delete News'; // slug = delete-news
     $deleteNews->save();
 ```
+
 ### User model
+
 First, use the `IsakzhanovR\Permissions\Traits\HasPermissions` and `IsakzhanovR\Permissions\Traits\HasRoles` traits to your `User` model.
 
 If you use the command `php artisan laravel-permissions:migrate`, these changes will occur automatically and your `User` model will look like this:
@@ -288,11 +320,13 @@ final class User  extends Authenticatable implements PermissibleContract, Roleab
 ```
 
 ### Attach, detach and sync permissions
-This package allows users to be associated with permissions and roles.
-Each role is associated with several permissions. in this case, the `User` can have a separate `Permission` that is not included in the list of permissions for the role.
-`Role` and `Permission` are the usual Eloquent  models.
+
+This package allows users to be associated with permissions and roles. Each role is associated with several permissions. in this case, the `User` can have a separate `Permission`
+that is not included in the list of permissions for the role.
+`Role` and `Permission` are the usual Eloquent models.
 
 #### Attach permissions
+
 So, when the roles are created let's assign them to the users. Thanks to the `HasRoles` trait this is as easy as:
 
 ```php
@@ -306,7 +340,9 @@ So, when the roles are created let's assign them to the users. Thanks to the `Ha
     // equivalent to $user->roles()->sync(array($admin->id, $manager->id));
     $user->attachRoles($admin,$manager,...);
 ```
+
 The method `$user->attachRole()`  accepts an argument that can be an `id`, `slug`, or `instance of Role` the model
+
 ```php
     $user->attachRole(1);                   // id
     //Or
@@ -323,14 +359,17 @@ The method `$user->attachRole()`  accepts an argument that can be an `id`, `slug
 ```
 
 Let's start adding permissions to roles and users:
+
 ```php
     $admin->attachPermissions($createPost,$createNews,$updateProfile);
     $manager->attachPermissions($updatePost,$updateNews);
     $user->attachPermissions($deletePost,$deleteNews);
 ```
+
 So we added permissions for the admin and manager roles and also gave personal permissions for the user.
 
 All entities that use trait `HasPermission` have access to permission relationships and the following methods for adding permissions:
+
 ```php
     $subject->attachPermission(1);                      // id
     //Or
@@ -343,7 +382,9 @@ All entities that use trait `HasPermission` have access to permission relationsh
 ```
 
 #### Detach permissions
+
 To revoke roles and permissions, use the following methods:
+
 ```php
     $user->detachRole(1);                   // id
     //Or
@@ -365,7 +406,9 @@ To revoke roles and permissions, use the following methods:
 ```
 
 #### Syncing permissions
+
 To synchronization roles and permissions, use the following methods:
+
 ```php
     $user->syncRoles([1,2,3]);            // array roles ids
 
@@ -377,6 +420,7 @@ To synchronization roles and permissions, use the following methods:
 ### Checking for permissions
 
 Now we can check for roles and permissions simply by doing:
+
 ```php
     $user = User::find(1);
 
@@ -390,7 +434,9 @@ Now we can check for roles and permissions simply by doing:
     $user->hasRole(Role::find(1)): bool
 
 ```
+
 You can have as many roles as you want for each user, and Vice versa.
+
 ```php
     $user = User::find(1);
 
@@ -400,7 +446,9 @@ You can have as many roles as you want for each user, and Vice versa.
     // if user has only 'admin' role return false
     $user->hasRoles('project-manager','admin'):bool
 ```
+
 We can check permissions for entities using the following method:
+
 ```php
     $user = User::find(1);
 
@@ -412,7 +460,9 @@ We can check permissions for entities using the following method:
     // with permission slug, id or instance:
     $user->hasPermissions('create-post',2, Permission::find(3)):bool
 ```
+
 You can also use placeholders (wildcards) to check any matching permission by doing:
+
 ```php
     $user = User::find(1);
 
@@ -423,19 +473,26 @@ You can also use placeholders (wildcards) to check any matching permission by do
     $subject->matchPermissions('*post'):bool
 
 ```
+
 ### Middleware
+
 You can use a middleware to filter routes and route groups by permission or role. Add middlewares in `$routeMiddleware` of `app/Http/Kernel.php` file:
+
 ```php
 use IsakzhanovR\Permissions\Http\Middleware\Permission;
+use IsakzhanovR\Permissions\Http\Middleware\Permissions;
 use IsakzhanovR\Permissions\Http\Middleware\Role;
+use IsakzhanovR\Permissions\Http\Middleware\Roles;
 use IsakzhanovR\Permissions\Http\Middleware\Ability;
 
 protected $routeMiddleware = [
     // ...
 
-    'role'        => Role::class,        // Checks for the entry of one of the specified permissions.
-    'permission'  => Permission::class,  // Checks for the occurrence of one of the specified roles.
-    'ability'     => Ability::class,     // Checks the entry of all of the specified roles.
+    'role'        => Role::class,        // Checks for all of the specified roles.
+    'roles'       => Roles::class,       // Checks for the presence of one of the specified roles.
+    'permission'  => Permission::class,  // Checks whether all of the specified permissions are entered.
+    'permissions' => Permissions::class, // Checks whether one of the specified permissions has been entered.
+    'ability'     => Ability::class,     // Checks for matches in both roles and permissions.
 ]
 ```
 
@@ -483,16 +540,19 @@ app('router')
 ```
 
 ### Artisan commands
+
 You can create a role or a permission from a console with artisan commands:
+
 ```
 php artisan laravel-permissions:create-role {name}
 
 php artisan laravel-permissions:create-permission {name}
 ```
+
 You can also invoke the creation of roles and permissions from your application:
 
-Artisan::call('laravel-permissions:create-role', ['name' => $name]);
-Artisan::call('laravel-permissions:create-permission', ['name' => $name]);
+Artisan::call('laravel-permissions:create-role', ['name' => $name]); Artisan::call('laravel-permissions:create-permission', ['name' => $name]);
 
 ## License
+
 This package was written under [Andrey Helldar](https://github.com/andrey-helldar) supervision under the [MIT License](LICENSE.md).
