@@ -92,7 +92,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         $this->loadLaravelMigrations($this->database);
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
-        $this->refreshDatabase();
+        $this->artisan('migrate')->run();
 
         DatabaseSeeder::run();
     }
