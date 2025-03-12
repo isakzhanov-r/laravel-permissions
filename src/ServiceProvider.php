@@ -69,7 +69,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     protected function existPermissionsTable()
     {
         return Cacheable::make(__FUNCTION__, function () {
-            return Schema::connection(Config::get('connection', 'mysql'))->hasTable(Configable::table('permissions'));
+            return Schema::connection(Config::get('database.default', 'mysql'))->hasTable(Configable::table('permissions'));
         }, 'boot');
     }
 
