@@ -2,6 +2,7 @@
 
 namespace IsakzhanovR\Permissions;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -10,7 +11,6 @@ use IsakzhanovR\Permissions\Commands\CreateRole;
 use IsakzhanovR\Permissions\Commands\Migration;
 use IsakzhanovR\Permissions\Helpers\Cacheable;
 use IsakzhanovR\Permissions\Helpers\Configable;
-
 use function config_path;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -69,7 +69,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     protected function existPermissionsTable()
     {
         return Cacheable::make(__FUNCTION__, function () {
-            return Schema::connection(Config::get('database.default', 'mysql'))->hasTable(Configable::table('permissions'));
+            try {
+                return Schema::connection(Config::get('database.default', 'mysql'))->hasTable(Configable::table('permissions'));
+            } catch (QueryException $exception) {
+                return false;
+            }
         }, 'boot');
     }
 
